@@ -39,3 +39,15 @@ Next Steps
 1) Deployment: wire a simple API or Gmail forwarding handler that calls `classify_email_with_headers`, logs decisions, and stores samples for continual learning.
 2) Header depth: add domain similarity via Levenshtein/tokenized subdomain checks; optionally parse ARC/Received chains for hop anomalies.
 3) Safety/LLM: tighten Gemini prompt templates and add length guards; consider local explanation fallback (template-based) for offline use.
+
+API (no notebook)
+-----------------
+- Files: `app.py`, `requirements.txt`. Point `ARTIFACT_DIR` (env) at the directory holding `calibrated_model_v1.joblib` and the MiniLM encoder downloads (HF will fetch on first run).
+- Run locally:
+  - `pip install -r requirements.txt`
+  - `export GEMINI_API_KEY=...` (optional)
+  - `uvicorn app:app --host 0.0.0.0 --port 8000`
+- Endpoints:
+  - `POST /classify` with JSON `{"email_text": "...", "raw_headers": "...", "include_explanation": true}`. Returns label, probabilities, header analysis, and Gemini explanation if configured.
+  - `POST /gmail-hook` with JSON `{"message_data": "<base64url raw email>", "include_explanation": true}`. Use this for Gmail forwards/webhooks (supply the raw email in base64url). 
+  - `GET /health` for a quick check.

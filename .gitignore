@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*.joblib
+*.npy
+artifacts/
+.DS_Store

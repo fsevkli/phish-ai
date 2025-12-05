@@ -1,0 +1,27 @@
+// TODO: set to your deployed /gmail-hook endpoint
+const API_URL = 'https://your-endpoint.example.com/gmail-hook';
+
+function scanLabel() {
+  const label = GmailApp.getUserLabelByName('To-Scan');
+  if (!label) return;
+  const threads = label.getThreads(0, 20);
+  threads.forEach(thread => {
+    const msg = thread.getMessages().pop();
+    const raw = Utilities.base64EncodeWebSafe(msg.getRawContent());
+    const payload = { message_data: raw, include_explanation: true };
+    const resp = UrlFetchApp.fetch(API_URL, {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true,
+    });
+    const result = JSON.parse(resp.getContentText());
+    const body = [
+      `Classification: ${result.combined_label}`,
+      `Probability: ${result.combined_prob_phish.toFixed(2)}`,
+      result.explanation || ''
+    ].join('\n');
+    msg.reply(body);
+  });
+  label.removeFromThreads(threads);
+}
