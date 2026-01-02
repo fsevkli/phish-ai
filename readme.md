@@ -1,5 +1,7 @@
 Project Overview
 ----------------
+![Hybrid phishing detection architecture](diagram.png)
+
 - Goal: Hybrid phishing email detection that combines engineered security features with MiniLM embeddings, calibrated logistic regression, and Gemini-generated explanations. Designed for repeatable Colab runs with cached artifacts.
 - Why: Phishing is the top entry point for compromise. Analysts and users need calibrated probabilities, evidence, and plain-language reasons rather than opaque flags.
 - Scope: Detection accuracy, interpretability, and basic robustness testing across two public datasets (HF + Kaggle) plus adversarial low-signal phish.
